@@ -1,18 +1,30 @@
 var Backbone = require('backbone');
 
 
-var OderItem = Backbone.Model.extend({
-    defaults: {
-      "user_avatar": null,
-    },
+var OrderItem = Backbone.Model.extend({
     idAttribute: '_id'
 });
 
-var OrderCollection = Backbone.Collection.extend({
-    model: Order
+var OrderItemCollection = Backbone.Collection.extend({
+    model: OrderItem,
+
+    total: function(){
+      this.reduce(function(sum, item){
+         return sum + parseFloat(item.get('price'));
+      }, 0);
+   }
 });
 
+
+
+var Order = Backbone.Collection.extend({
+    idAttribute: '_id'
+});
+
+
+
 module.exports = {
-    OrderItem: OrderItem,
-    OrderCollection: OrderCollection
+  Order: Order,
+  OrderItem: OrderItem,
+  OrderItemCollection: OrderItemCollection
 };

@@ -4,6 +4,7 @@ var Backbone = require('backbone');
 
 var Main = require('./components/app.jsx').Main;
 var Menu = require('./components/menu.jsx').Menu;
+var OrderingContainer= require('./components/menu.jsx').OrderingContainer;
 
 
 
@@ -25,7 +26,7 @@ var AppRouter = Backbone.Router.extend({
 
   menu: function(){
     ReactDOM.render(
-      (<Main><Menu/></Main>),
+      (<Main><OrderingContainer/></Main>),
       document.getElementById('app')
     );
   },
