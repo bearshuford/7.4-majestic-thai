@@ -113,7 +113,6 @@ var menu = [
 var FoodItem = React.createClass({
 
   handleAdd: function(){
-    console.log('food item handleAdd');
     var orderItem = new OrderItem({
       price:  this.props.price,
       name:   this.props.name
@@ -281,7 +280,6 @@ var OrderingContainer = React.createClass({
     );
   }
 })
-
 
 module.exports = {
   Menu: Menu,

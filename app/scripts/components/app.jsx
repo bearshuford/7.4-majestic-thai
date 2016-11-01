@@ -8,7 +8,7 @@ var Paper = require('material-ui').Paper;
 var RaisedButton = require('material-ui').RaisedButton;
 
 
-const styles = {
+var styles = {
   appBar: {
     marginBottom: '8px'
   },
@@ -19,7 +19,7 @@ const styles = {
 
 var Main = React.createClass({
   handleTitle(){
-    this.props.router.navigate('', {trigger: true});
+    this.props.router.navigate('index', {trigger: true});
   },
 
   render: function() {
@@ -36,7 +36,7 @@ var Main = React.createClass({
           {this.props.children}
 
           {!this.props.children &&
-            <div>
+            (<div>
               <RaisedButton style={styles.button}
                 label="place an order"
                 href="#/menu"
@@ -48,7 +48,7 @@ var Main = React.createClass({
                 href="#/kitchen"
 
               />
-            </div>
+            </div>)
           }
         </div>
       </MuiThemeProvider>
