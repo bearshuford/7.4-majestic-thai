@@ -9,7 +9,7 @@ var OrderItemCollection = Backbone.Collection.extend({
     model: OrderItem,
 
     total: function(){
-      this.reduce(function(sum, item){
+      return this.reduce(function(sum, item){
          return sum + parseFloat(item.get('price'));
       }, 0);
    }
@@ -17,8 +17,13 @@ var OrderItemCollection = Backbone.Collection.extend({
 
 
 
-var Order = Backbone.Collection.extend({
+var Order = Backbone.Model.extend({
     idAttribute: '_id'
+});
+
+var OrderCollection = Backbone.Collection.extend({
+		model: Order,
+		url: 'https://tiny-lasagna-server.herokuapp.com/collections/bear-orders'
 });
 
 
@@ -26,5 +31,6 @@ var Order = Backbone.Collection.extend({
 module.exports = {
   Order: Order,
   OrderItem: OrderItem,
+	OrderCollection: OrderCollection,
   OrderItemCollection: OrderItemCollection
 };

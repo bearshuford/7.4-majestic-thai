@@ -10,9 +10,13 @@ var CardActions = require('material-ui/Card').CardActions;
 var CardHeader  = require('material-ui/Card').CardHeader;
 var CardText    = require('material-ui/Card').CardText;
 
-var FlatButton = require('material-ui').FlatButton;
-var Chip       = require('material-ui').Chip;
-var Badge      = require('material-ui').Badge;
+var FlatButton    = require('material-ui').FlatButton;
+var RaisedButton  = require('material-ui').RaisedButton;
+var IconButton    = require('material-ui').IconButton;
+
+var Chip  = require('material-ui').Chip;
+var Badge = require('material-ui').Badge;
+var Avatar = require('material-ui').Avatar;
 
 var SelectField = require('material-ui').SelectField;
 var Menu        = require('material-ui').Menu;
@@ -27,11 +31,16 @@ var Subheader = require('material-ui').Subheader;
 
 var FloatingActionButton = require('material-ui').FloatingActionButton;
 
+var greenA400 = require('material-ui/styles/colors').greenA400;
+var transparent = require('material-ui/styles/colors').transparent;
+
 var Order = require('./../models/order.js').Order;
+var OrderCollection = require('./../models/order.js').OrderCollection;
+
 var OrderItem = require('./../models/order.js').OrderItem;
 var OrderItemCollection = require('./../models/order.js').OrderItemCollection;
 
-var IconButton = require('material-ui').IconButton;
+
 
 
 const styles = {
@@ -51,10 +60,13 @@ const styles = {
   card: {
     position:     'relative',
     width:        '49%',
-    marginBottom: '10px'
+    marginBottom: '10px',
+    minHeight:    '88px'
   },
   cart: {
-    width:  '30%'
+    width:          '30%',
+    position:       'relative',
+    paddingBottom:  '36px'
   },
   addButton: {
     position: 'absolute',
@@ -65,8 +77,14 @@ const styles = {
     position: 'absolute',
     top:      '8px',
     right:    '5px'
+  },
+  orderButton: {
+    position: 'absolute',
+    bottom:   '0px',
   }
 };
+
+
 
 
 var menu = [
@@ -90,8 +108,6 @@ var menu = [
     'details':  'Grill salmon with stir fried onions, carrots, celery, mushroom, fresh garlic and ginger sauce',
   }
 ]
-
-
 
 
 
@@ -128,6 +144,7 @@ var FoodItem = React.createClass({
             mini={true}
             style={styles.addButton}
             onTouchTap={this.handleAdd}
+            zDepth={1}
           >
             <i className="material-icons">add</i>
           </FloatingActionButton>
@@ -144,8 +161,7 @@ var Menu = React.createClass({
   render: function(){
     var menuArray = _.map(menu, function(item, i){
       return (
-        <FoodItem key={'menu-item-'+i}
-          fakeKey={'menu-item-'+i}
+        <FoodItem key={i}
           price={item.price}
           details={item.details}
           name={item.name}
@@ -162,39 +178,56 @@ var Menu = React.createClass({
 
 
 
+
 var Cart = React.createClass({
 
-  render: function(){
-    var self = this;
 
-    var order = this.props.orderCollection.map(function(orderItem){
+  render: function(){
+
+    var self = this;
+    var coll = this.props.orderCollection;
+    var hasColl = (coll.length > 0);
+
+    console.log('RENDER');
+
+
+    var order = coll.map(function(orderItem){
       return(
         <ListItem
           key={orderItem.cid}
           primaryText={orderItem.get('name')}
           secondaryText={orderItem.get('price')}
-          rightIconButton={<IconButton> <i className="material-icons">delete</i></IconButton>}
+          rightIconButton={<IconButton onTouchTap={function(){self.props.removeItem(orderItem)}}> <i className="material-icons">delete</i></IconButton>}
         />
        );
      });
 
-     console.log(this.props.orderCollection);
      return (
       <Paper style={styles.cart} rounded={false}>
         <List>
           <Subheader>Order</Subheader>
           {order}
-
+          {hasColl && <Divider inset={true} />}
+          {hasColl &&
+            <ListItem
+              primaryText={this.props.orderCollection.total()}
+              secondaryText="Total"
+              leftAvatar={
+                <Avatar color={greenA400} backgroundColor={transparent}>
+                  $
+                </Avatar>
+              }
+            />
+          }
         </List>
 
-
-
-        <FlatButton
-          style={styles.orderButton}
-          onTouchTap={this.props.placeOrder}
-          label="place order"
-          primary={true}
-        />
+        {hasColl &&
+          <RaisedButton style={styles.orderButton}
+            label="place order"
+            fullWidth={true}
+            onTouchTap={this.props.placeOrder}
+            />
+        }
       </Paper>
     );
    }
@@ -217,32 +250,31 @@ var OrderingContainer = React.createClass({
 
     delete orderItemData.cid;
     orderCollection.add([orderItemData]);
-    console.log(orderCollection);
 
     this.setState({orderCollection: orderCollection});
   },
 
-  removeItem: function(){
-
+  removeItem: function(orderItem){
+    console.log('removeItem:', orderItem);
+    var orderCollection = this.state.orderCollection;
+    orderCollection.remove(orderItem);
+    this.setState({orderCollection: orderCollection});
   },
 
   placeOrder: function(){
-    console.log('placeOrder');
-  /*
-    var newOrder = new orderModels.Order();
+    var newOrder = new OrderCollection();
     var orderCollection = this.state.orderCollection;
 
-    newOrder.set({items: orderCollection.toJSON()});
-
+    newOrder.create(orderCollection);
     this.setState({orderCollection: new OrderItemCollection});
-  */
   },
 
 
   render: function(){
     return(
       <div style={styles.ordering}>
-        <Menu handleAdd={this.addToOrder}/>
+        <Menu
+          handleAdd={this.addToOrder}/>
         <Cart
           placeOrder={this.placeOrder}
           removeItem={this.removeItem}
