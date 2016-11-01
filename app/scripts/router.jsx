@@ -19,14 +19,14 @@ var AppRouter = Backbone.Router.extend({
   index: function(){
     console.log((<Main/>));
     ReactDOM.render(
-      (<Main/>),
+      (<Main router={this}/>),
       document.getElementById('app')
     );
   },
 
   menu: function(){
     ReactDOM.render(
-      (<Main><OrderingContainer/></Main>),
+      (<Main router={this}><OrderingContainer/></Main>),
       document.getElementById('app')
     );
   },

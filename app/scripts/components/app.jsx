@@ -9,37 +9,47 @@ var RaisedButton = require('material-ui').RaisedButton;
 
 
 const styles = {
-  app: {
-
-  },
   appBar: {
     marginBottom: '8px'
+  },
+  button: {
+    marginRight: '8px'
   }
 };
 
 var Main = React.createClass({
+  handleTitle(){
+    this.props.router.navigate('', {trigger: true});
+  },
 
   render: function() {
 
-    console.log('main');
     return (
       <MuiThemeProvider>
         <div>
           <AppBar
             title="Majestic Thai"
             showMenuIconButton={false}
+            onTitleTouchTap={this.handleTitle}
             style={styles.appBar}
           />
           {this.props.children}
 
           {!this.props.children &&
-            <RaisedButton
-              label="place an order"
-              href="#/menu"
-              secondary={true}
-              fullWidth={true}
-            />
-}
+            <div>
+              <RaisedButton style={styles.button}
+                label="place an order"
+                href="#/menu"
+                secondary={true}
+
+              />
+              <RaisedButton style={styles.button}
+                label="kitchen"
+                href="#/kitchen"
+
+              />
+            </div>
+          }
         </div>
       </MuiThemeProvider>
     );

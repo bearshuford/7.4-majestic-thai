@@ -34,12 +34,12 @@ var FloatingActionButton = require('material-ui').FloatingActionButton;
 var greenA400 = require('material-ui/styles/colors').greenA400;
 var transparent = require('material-ui/styles/colors').transparent;
 
+
 var Order = require('./../models/order.js').Order;
 var OrderCollection = require('./../models/order.js').OrderCollection;
 
 var OrderItem = require('./../models/order.js').OrderItem;
 var OrderItemCollection = require('./../models/order.js').OrderItemCollection;
-
 
 
 
@@ -86,7 +86,6 @@ const styles = {
 
 
 
-
 var menu = [
   {
     'name':     'Curry Catfish',
@@ -108,8 +107,6 @@ var menu = [
     'details':  'Grill salmon with stir fried onions, carrots, celery, mushroom, fresh garlic and ginger sauce',
   }
 ]
-
-
 
 
 
@@ -155,7 +152,6 @@ var FoodItem = React.createClass({
 });
 
 
-
 var Menu = React.createClass({
 
   render: function(){
@@ -175,21 +171,13 @@ var Menu = React.createClass({
 });
 
 
-
-
-
-
 var Cart = React.createClass({
-
 
   render: function(){
 
     var self = this;
     var coll = this.props.orderCollection;
     var hasColl = (coll.length > 0);
-
-    console.log('RENDER');
-
 
     var order = coll.map(function(orderItem){
       return(
@@ -240,24 +228,34 @@ var OrderingContainer = React.createClass({
 
   getInitialState: function(){
     var orderCollection = new OrderItemCollection();
+
+    var orderData = JSON.parse(localStorage.getItem('order'));
+
+    orderCollection.add(orderData);
+
     return {orderCollection: orderCollection}
   },
 
   addToOrder: function(menuItem){
-    console.log('addToOrder:', menuItem);
     var orderCollection = this.state.orderCollection;
     var orderItemData = menuItem.toJSON();
 
     delete orderItemData.cid;
     orderCollection.add([orderItemData]);
 
+    var orderDataStr = JSON.stringify(orderCollection.toJSON());
+    localStorage.setItem('order',orderDataStr);
+
     this.setState({orderCollection: orderCollection});
   },
 
   removeItem: function(orderItem){
-    console.log('removeItem:', orderItem);
     var orderCollection = this.state.orderCollection;
     orderCollection.remove(orderItem);
+
+    var orderDataStr = JSON.stringify(orderCollection.toJSON());
+    localStorage.setItem('order',orderDataStr);
+
     this.setState({orderCollection: orderCollection});
   },
 
@@ -268,7 +266,6 @@ var OrderingContainer = React.createClass({
     newOrder.create(orderCollection);
     this.setState({orderCollection: new OrderItemCollection});
   },
-
 
   render: function(){
     return(
