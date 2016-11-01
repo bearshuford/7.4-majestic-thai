@@ -18,8 +18,8 @@ var styles = {
 };
 
 var Main = React.createClass({
-  handleTitle(){
-    this.props.router.navigate('index', {trigger: true});
+  handleTitle: function(){
+    this.props.router.navigate('', {trigger: true});
   },
 
   render: function() {
